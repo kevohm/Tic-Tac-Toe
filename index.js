@@ -18,7 +18,6 @@ class Box{
             return
         }
         this.rounds += 1
-        currentP.innerHTML = `Current player is player ${this.currentPlayer}`
         if (this.currentPlayer == 1){
             this.tiles[index] = 1
             this.currentPlayer = 2
@@ -26,14 +25,17 @@ class Box{
             this.tiles[index] = 2
             this.currentPlayer = 1
         }
+        currentP.innerHTML = `Current player is player ${this.currentPlayer}`
         LoadData()
         console.log(this.tiles)
+        if(this.rounds > 4){
         const winner = this.checkWinnner()
-        if (winner && this.rounds > 4){
+        if (winner){
             toggleError(`Player ${winner} wins`)
             this.scores[winner] += 1
-            updateScore(this.scores)
+            updateScore()
             this.endGame()
+        }
         }
         if (!this.tiles.includes(0)){
             this.restart()
@@ -93,7 +95,8 @@ entry.forEach((tile, index)=>{
 })
 closeMsg.addEventListener("click", ()=>messageBox.classList.remove("active"))
 
-const updateScore = (scores)=>{
+const updateScore = ()=>{
+    const scores = instance.scores
     player1.innerHTML = scores['1']
     player2.innerHTML = scores['2']
 }
