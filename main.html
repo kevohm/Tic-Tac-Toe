@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./main.css">
+    <title>Tic-Tac-Toe</title>
+
+</head>
+
+<body>
+    <div class="popup">
+        <div class="message">
+            <header>
+                <h2>Message</h2>
+                <div class="exit">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>                      
+                </div>
+            </header>
+            <p>Error</p>
+        </div>
+    </div>
+    <div class="stats">
+        <div class="scores">
+            <div class="players">
+                <div class="titles">
+                    <h3>Player 1</h3>
+                    <h3 class="divider">vs</h3>
+                    <h3>Player 2</h3>
+                </div>
+                <div class="settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                      </svg>                      
+                </div>
+            </div>
+            <div class="actual-scores">
+                <div>
+                    <h3 class="player1 current-score" id="player1">0</h3>
+                    <h3 class="divider">:</h3>
+                    <h3 class="player2 current-score" id="player2">0</h>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="message">
+            <h4>Current player is player </h4>
+        </div>
+    </div>
+    <main>
+        <div class="box">
+        </div>
+        <div class="box">
+        </div>
+        <div class="box">
+        </div>
+        <div class="box">
+        </div>
+        <div class="box">
+        </div>
+        <div class="box">
+        </div>
+        <div class="box">
+        </div>
+        <div class="box">
+        </div>
+        <div class="box">
+        </div>
+    </main>
+    <script src="./main.js"></script>
+</body>
+
+</html>
