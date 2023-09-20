@@ -5,103 +5,79 @@ const closeMsg = document.querySelector(".popup .message header .exit")
 const currentP = document.querySelector(".stats .message h4");
 const player1 = document.getElementById("player1")
 const player2 = document.getElementById("player2")
-class Box{
-    constructor(currentPlayer=1,tiles=[0,0,0,0,0,0,0,0,0]){
-        this.currentPlayer = currentPlayer
-        this.tiles = tiles
-        this.scores = {'1':0,'2':0}
-        this.rounds = 0
-    }
-    update(index){
-        if (this.tiles[index] > 0){
-            alert("invalid move")
-            return
-        }
-        this.rounds += 1
-        if (this.currentPlayer == 1){
-            this.tiles[index] = 1
-            this.currentPlayer = 2
-        }else{
-            this.tiles[index] = 2
-            this.currentPlayer = 1
-        }
-        currentP.innerHTML = `Current player is player ${this.currentPlayer}`
-        LoadData()
-        console.log(this.tiles)
-        if(this.rounds > 4){
-        const winner = this.checkWinnner()
-        if (winner){
-            toggleError(`Player ${winner} wins`)
-            this.scores[winner] += 1
-            updateScore()
-            this.endGame()
-        }
-        }
-        if (!this.tiles.includes(0)){
-            this.restart()
-        }
-    }
-    endGame(){
-        this.tiles = [0,0,0,0,0,0,0,0,0]
-        this.currentPlayer = 1
-        this.rounds = 0
-        LoadData()
-    }
-    restart(){
-        toggleError("Match has ended!")
-        this.endGame()
-    }
-    checkWinnner(){
-        let winner = null
-        const possibilities = [
-            [1,[0,1,2]],[2,[0,1,2]],
-            [1,[3,4,5]],[2,[3,4,5]],
-            [1,[6,7,8]],[2,[6,7,8]],
-            [1,[0,4,8]],[2,[0,4,8]],
-            [1,[2,4,6]],[2,[2,4,6]],
-            [1,[0,3,6]],[2,[0,3,6]],
-            [1,[1,4,7]],[2,[1,4,7]],
-            [1,[2,5,8]],[2,[2,5,8]],]
-        for (let i = 0; i < possibilities.length; i++){
-            let index = possibilities[i][0]
-            let arr = possibilities[i][1]
-            winner = this.checkIndex(index,arr)
-            if(winner){
-                return winner
-            }
-        }
-        return winner
-    }
-    checkIndex(index,arr){
-        const tiles = this.tiles
-        if (tiles[arr[0]] === index && tiles[arr[1]] == index && tiles[arr[2]] == index){
-            return `${index}`
-        }
-        return null
-    }
-}
+const settings = document.querySelector(".stats .popup-settings")
+const settingsPopup = document.querySelector(".stats .scores .players .settings")
+const settingExit = document.querySelector(".popup-settings .exit")
+const mode = document.getElementById("mode")
+const player = document.getElementById("player")
+const theme = document.getElementById("theme")
+const body = document.body
 
-const instance = new Box()
-
+//events listeners
 document.addEventListener("DOMContentLoaded",()=>{
-    currentP.innerHTML = `Current player is player ${instance.currentPlayer}`
+    checkDefaults()
+    setDefaults()
+    LoadData()
+})
+settingsPopup.addEventListener("click", ()=>{
+    settings.classList.toggle("active")
+})
+settingExit.addEventListener("click",()=>{
+    settings.classList.remove("active")
 })
 
-//events
 entry.forEach((tile, index)=>{
     tile.addEventListener("click",()=>{
         instance.update(index)
     })
 })
 closeMsg.addEventListener("click", ()=>messageBox.classList.remove("active"))
+const optionList = [[mode,"setMode"],[theme, "setTheme"],[player, "setPlayerToStart"]]
+optionList.forEach((item)=>{
+    item[0].addEventListener("change",(e)=>{
+        e.preventDefault()
+        const {value} = e.target
+        if(item[1] !== "setTheme"){
+            if(instance.rounds === 0){
+                if (item[1] === "setPlayerToStart"){
+                    instance[item[1]](parseInt(value))
+                }else{
+                    instance[item[1]](value)
+                    
+                }
+                LoadData();
+            }else{
+                if (item[1] === "setMode"){
+                    e.target.value = instance.mode
+                }else{
+                    e.target.value = instance.playerToStart
+                }
+            }
+        }else{
+            instance[item[1]](value)
+            changeTheme(value)
+            LoadData();
+        }
+    })
+})
 
-const updateScore = ()=>{
+//functions
+const updatePlayer = ()=>{
+    if (instance.rounds === 0){
+        alert("reset")
+    }
+}
+
+const updateScore = (...players)=>{
+    const data = [...new Set(players)]
+    data.forEach((elem)=>instance.scores[elem] += 1)
     const scores = instance.scores
     player1.innerHTML = scores['1']
     player2.innerHTML = scores['2']
 }
 
 const LoadData  = ()=>{
+    currentP.innerHTML = `Current player is player ${instance.currentPlayer}`
     entry.forEach((tile, index)=>{
         data = instance.tiles[index]
         if (data == 1){
@@ -116,4 +92,36 @@ const LoadData  = ()=>{
 const toggleError = (msg="")=>{
     messageBox.classList.toggle("active")
     messageP.innerHTML = msg
+}
+const checkDefaults = ()=>{
+    let defaults = localStorage.getItem("defaults")
+    if (defaults){
+        defaults = JSON.parse(defaults)
+        Object.entries(defaults).forEach((item)=>{
+            if(item[0] === "playerToStart"){
+                instance.setPlayerToStart(parseInt(item[1]))
+            }else if(item[0] === "theme"){
+                instance.setTheme(item[1])
+            }else if(item[0] === "mode"){
+                instance.setMode(item[1])
+            }
+        })
+    }else{
+        const {theme,playerToStart,mode } = instance
+        localStorage.setItem("defaults", JSON.stringify({theme,playerToStart,mode}))
+    }
+}
+const setDefaults = ()=>{
+    mode.value = instance.mode
+    changeTheme(instance.theme)
+    theme.value = instance.theme
+    player.value = instance.playerToStart
+}
+
+const changeTheme = (theme)=>{
+    if (theme === "light"){
+        body.classList.remove("dark-mode")
+    }else if(theme === "dark"){
+        body.classList.add("dark-mode")
+    }
 }
